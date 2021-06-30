@@ -1,20 +1,22 @@
 import { login, logout, getInfo, getShopList, chooseShop, getChooseShop } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/libs/auth'
+import { getToken, setToken, removeToken } from '@/libs/cookie'
 import { getFirstNode } from '@/libs/util'
 
-const state = {
-  token: getToken(),
-  name: '',
-  userId: '',
-  shop: {
-    shopId: '',
-    shopCode: ''
-  },
-  roles: [],
-  menus: [],
-  functions: [],
-  shopList: [],
-  firstPage: ''
+const state = function() {
+  return {
+    token: getToken(),
+    name: '',
+    userId: '',
+    shop: {
+      shopId: '',
+      shopCode: ''
+    },
+    roles: [],
+    menus: [],
+    functions: [],
+    shopList: [],
+    firstPage: ''
+  }
 }
 
 const mutations = {

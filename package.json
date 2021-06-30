@@ -3,17 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@antv/g2plot": "^2.3.24",
+    "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "element-plus": "^1.0.2-beta.28",
     "js-cookie": "^2.2.1",
     "uuid-v4": "^0.1.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vuedraggable": "^2.24.3",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
@@ -26,6 +29,10 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^7.3.1",
+    "sass-resources-loader": "^2.2.2",
+    "sortablejs": "^1.13.0",
     "vue-cli-plugin-element-plus": "0.0.13"
   },
   "eslintConfig": {

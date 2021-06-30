@@ -18,7 +18,7 @@
           <div style="color: #FD4378;font-size: 16px;">721851621</div>
         </div>
       </div>
-      <a class="contact-ref" slot="reference">联系我们</a>
+      <template #reference><a class="contact-ref">联系我们</a></template>
     </el-popover>
   </el-footer>
 </template>
@@ -28,7 +28,7 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-::v-deep .contact-card {
+:deep(.contact-card) {
   padding: 0;
 }
 .el-footer {

@@ -9,7 +9,7 @@
           <img class="img" src="@/assets/images/shop.png" />
           <span>{{ shop.shopName ? shop.shopName : '暂未选择店铺' }}</span>
           <el-button type="text" size="mini" class="switch-btn" :disabled="shopList.length === 0" @click="isOpenShopModal = true">切换</el-button>
-          <shop-change :value="isOpenShopModal" @close="isOpenShopModal = false" />
+          <shop-change v-model="isOpenShopModal" @close="isOpenShopModal = false" />
         </div>
         <div style="display: flex;align-items: center;">
           <img class="img" src="@/assets/images/user.png" />
@@ -84,11 +84,14 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, watch } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { mapGetters } from 'vuex'
 import ShopChange from '@/components/shop-change'
 import copyright from '@/components/copyright'
-import { getToken } from '@/cookie'
+import { getToken } from '@/libs/cookie'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+
 export default defineComponent({
   name: 'Index',
   components: { ShopChange, copyright },
@@ -109,18 +112,18 @@ export default defineComponent({
       activeIndex: 0,
       openIndexs: [],
       isRouterAlive: true,
-      childActiveIndex: '1-0',
+      childActiveIndex: '1-0'
     }
   },
   computed: {
     ...mapGetters([
       'name',
-      'shopList',
       'menus',
-      'shop'
+      'shop',
+      'shopList'
     ]),
     showSecondList() {
-      return this.menus.length && this.menus[this.activeIndex].children
+      return this.menus.length && this.menus[this.activeIndex] && this.menus[this.activeIndex].children
     },
     routerName() {
       return this.$route.name
@@ -130,35 +133,47 @@ export default defineComponent({
     shop: {
       handler: function(newV) {
         this.currentShopId = newV.shopId + '-' + newV.shopCode
-        // this.$eventHub.$emit('refreshPage')
         this.reload()
       },
-      deep: true,
-      immediate: true
+      deep: true
     },
-    $route: {
-      handler: function(val) {
-        let index1 = -1
-        let index2 = ''
-        this.activeIndex = this.menus.findIndex(item => item.code === val.meta.parent[0])
-        if (val.meta.parent && val.meta.parent[1]) {
-          index1 = this.menus[this.activeIndex].children.findIndex(i => i.code == val.meta.parent[1])
-          this.childActiveIndex = this.activeIndex + '-' + index1
-          if (index1 > -1) {
-            index2 = this.menus[this.activeIndex].children[index1].children.findIndex(i => i.code === val.name)
-            this.childActiveIndex += '-' + index2
-          }
+    $route(val) {
+      if (val.path === '/') return
+      let index1 = -1
+      let index2 = ''
+      this.activeIndex = this.menus.findIndex(item => item.code === val.meta.parent[0])
+      if (val.meta.parent && val.meta.parent[1]) {
+        index1 = this.menus[this.activeIndex].children.findIndex(i => i.code == val.meta.parent[1])
+        this.childActiveIndex = this.activeIndex + '-' + index1
+        if (index1 > -1) {
+          index2 = this.menus[this.activeIndex].children[index1].children.findIndex(i => i.code === val.name)
+          this.childActiveIndex += '-' + index2
         }
-      },
-      immediate: true
-    },
+      }
+    }
   },
   setup() {
+    const store = useStore()
+    const router = useRouter()
+    const getAuthData = async() => {
+      try {
+        await store.dispatch('user/getInfo')
+        router.push({ name: 'product_set_settings' })
+        const shops = await store.dispatch('user/getShopList')
+        if (shops.length) {
+          await store.dispatch('user/getChooseShop')
+        }
+      } catch (e) {
+        console.log(e, '*********')
+        await store.dispatch('user/logout')
+        router.push({ name: 'login'})
+      }
+    }
     onMounted(() => {
       if (!getToken()) {
-        this.$router.push({ name: 'login' })
+        router.push({ name: 'login' })
       } else {
-        this.getAuthData()
+        getAuthData()
       }
     })
   },
@@ -271,11 +286,11 @@ $headerHeight: 48px;
   top: 2px;
   left: 2px;
 }
-.shop-select ::v-deep {
-  .el-input__prefix {
+.shop-select {
+  :deep(.el-input__prefix) {
     line-height: 32px;
   }
-  .el-input__inner {
+  :deep(.el-input__inner){
     background-color: transparent!important;
     border: 1px solid rgba(255,255,255,0.3);
     border-radius: 2px;

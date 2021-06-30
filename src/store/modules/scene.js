@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { getLastUpdateTime } from '@/api/common'
 const state = {
   lastUpdateTime: {
@@ -21,7 +20,7 @@ const mutations = {
     state.currentScene = val
   },
   SET_TIME: (state, time) => {
-    Vue.set(state.lastUpdateTime, state.currentScene, time)
+    state.lastUpdateTime[state.currentScene] = time
   }
 }
 

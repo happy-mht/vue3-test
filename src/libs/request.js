@@ -1,11 +1,11 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { ElMessage } from 'element-plus'
 import store from '@/store'
 const uuid = require('uuid')
 export const platForm = 'cdl-cc'
 export const requestType = {
   RETAIN: 0, //保留返回值，在 axios 拦截器中不做处理，直接返回到页面
-  MESSAGE: 1 //在拦截器中使用 Element.Message.error() 报错
+  MESSAGE: 1 //在拦截器中使用 Element.ElMessage.error() 报错
 }
 export const baseUrl = '/ee/proxy/cdl-cc'
 
@@ -38,7 +38,7 @@ service.interceptors.response.use(
     const res = response.data
     if (res.code !== 200) {
       if (response.config.requestType !== requestType.RETAIN) {
-        Message({
+        ElMessage({
           message: res.msg || res.message || 'Error',
           type: 'error',
           duration: 5 * 1000
@@ -48,7 +48,7 @@ service.interceptors.response.use(
         store.dispatch('user/logout').then(() => {
           location.reload()
         }).catch(e => {
-          Message.error(e.message)
+          ElMessage.error(e.message)
         })
       }
       return Promise.reject(res)
@@ -68,7 +68,7 @@ service.interceptors.response.use(
         }).catch(e => { this.$message.error(e.message) })
       }, 3000)
     }
-    Message.error(error.message)
+    ElMessage.error(error.message)
     return Promise.reject(error)
   }
 )

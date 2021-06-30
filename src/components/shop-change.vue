@@ -6,7 +6,7 @@
     title="切换店铺"
     v-model="visible"
     width="500px"
-    class="add-dialog"
+    custom-class="add-dialog"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     append-to-body
@@ -104,7 +104,7 @@ export default {
         return
       }
       try {
-        await this.$handleConfirm({
+        await this.$utils.handleConfirm({
           message: `
             <span>确定切换店铺吗？</span>
             <span>切换后未保存的数据将会丢失</span>
@@ -116,7 +116,7 @@ export default {
         }
         await this.$store.dispatch('user/chooseShop', params)
         localStorage.setItem('shopChange', uuidV4())
-        this.visible = false
+        this.$emit('close')
       } catch (e) {
         console.log(e)
       }
@@ -130,8 +130,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.add-dialog ::v-deep {
-  .el-dialog__body {
+.add-dialog {
+  :deep(.el-dialog__body) {
     padding: 0 0 4px 0;
   }
 }
